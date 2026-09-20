@@ -1,10 +1,31 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { erediteHeroFields, erediteIntroFields, kicker, section, title } from './pages';
 
-type Typology = { video?: { asset?: { _ref?: string } }; poster?: unknown; images?: unknown[] };
+type TypologyVideo = { video?: { asset?: { _ref?: string } } };
 
-// A typology shows one medium at a time: the video when there is one, otherwise the
-// first image; the rest are picked from a thumbnail strip on the site.
+// One video medium: its own file + poster, so a typology can carry several (renders and
+// videos share one ordered list below, same pattern as the project gallery).
+const typologyVideo = defineArrayMember({
+  type: 'object',
+  name: 'typologyVideo',
+  title: 'Video',
+  fields: [
+    defineField({
+      name: 'video', title: 'Video (mp4)', type: 'file', options: { accept: 'video/mp4' },
+      description: 'Se muestra silenciado y en bucle. Súbelo comprimido: H.264, máximo 1280 px de ancho y 5 MB.',
+      validation: (rule) => rule.required().custom((value) => {
+        const ref = (value as TypologyVideo['video'])?.asset?._ref;
+        return !ref || ref.endsWith('-mp4') ? true : 'Solo se aceptan videos mp4.';
+      }),
+    }),
+    defineField({ name: 'poster', title: 'Póster del video', type: 'localeImage', description: 'Imagen que se ve antes de reproducirlo.', validation: (rule) => rule.required() }),
+    defineField({ name: 'caption', title: 'Pie', type: 'localeString' }),
+  ],
+  preview: { select: { title: 'caption.es', media: 'poster' } },
+});
+
+// A typology shows one medium at a time, picked from a thumbnail strip on the site; renders
+// and videos share one ordered list, so an editor can mix and add as many videos as needed.
 const typology = defineArrayMember({
   type: 'object',
   fields: [
@@ -14,21 +35,9 @@ const typology = defineArrayMember({
     defineField({ name: 'title', title: 'Título', type: 'localeString', validation: (rule) => rule.required() }),
     defineField({ name: 'subtitle', title: 'Subtítulo', type: 'localeString' }),
     defineField({
-      name: 'video', title: 'Video (opcional, mp4)', type: 'file', options: { accept: 'video/mp4' },
-      description: 'Se muestra por defecto, silenciado y en bucle. Súbelo comprimido: H.264, máximo 1280 px de ancho y 5 MB.',
-      validation: (rule) => rule.custom((value) => {
-        const ref = (value as Typology['video'])?.asset?._ref;
-        return !ref || ref.endsWith('-mp4') ? true : 'Solo se aceptan videos mp4.';
-      }),
-    }),
-    defineField({
-      name: 'poster', title: 'Póster del video', type: 'localeImage', hidden: ({ parent }) => !(parent as Typology)?.video,
-      validation: (rule) => rule.custom((value, context) => (!(context.parent as Typology)?.video?.asset?._ref || value ? true : 'Obligatorio cuando hay video: es la imagen que se ve antes de reproducirlo.')),
-    }),
-    defineField({
-      name: 'images', title: 'Renders y fotos', type: 'array', options: { layout: 'grid' },
-      of: [defineArrayMember({ type: 'captionedImage' })],
-      validation: (rule) => rule.custom((value, context) => ((context.parent as Typology)?.video?.asset?._ref || (value?.length ?? 0) > 0 ? true : 'Añade un video o al menos una imagen.')),
+      name: 'images', title: 'Renders, fotos y videos', type: 'array', options: { layout: 'grid' },
+      of: [defineArrayMember({ type: 'captionedImage' }), typologyVideo],
+      validation: (rule) => rule.min(1).error('Añade al menos un render, foto o video.'),
     }),
     defineField({ name: 'description', title: 'Descripción', type: 'localeText' }),
     defineField({ name: 'specs', title: 'Ficha', type: 'array', of: [defineArrayMember({ type: 'labelValue' })] }),
@@ -61,9 +70,10 @@ export const proyecto = defineType({
     section('gallery', 'Galería', [
       kicker, title,
       defineField({
-        name: 'items', title: 'Imágenes', type: 'array',
+        name: 'items', title: 'Fotos, renders y videos', type: 'array',
         of: [defineArrayMember({ type: 'object', fields: [
-          defineField({ name: 'image', title: 'Imagen', type: 'localeImage', validation: (rule) => rule.required() }),
+          defineField({ name: 'image', title: 'Imagen / póster', type: 'localeImage', validation: (rule) => rule.required() }),
+          defineField({ name: 'video', title: 'Video (opcional, mp4)', type: 'file', options: { accept: 'video/mp4' }, description: 'Si subes un video, reemplaza visualmente la imagen; la imagen queda como póster mientras carga.' }),
           defineField({ name: 'tag', title: 'Etiqueta', type: 'localeString', description: 'Fotografía, Render…' }),
         ], preview: { select: { title: 'tag.es', media: 'image' } } })],
       }),

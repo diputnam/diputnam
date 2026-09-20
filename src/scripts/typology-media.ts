@@ -11,17 +11,21 @@ export const mountTypologyMedia = (root: HTMLElement) => {
   if (!galleries.length) return () => {};
   const visible = new WeakSet<HTMLElement>();
 
-  // Plays the video only when its panel is visible, it is the selected medium and motion is welcome.
+  // Plays each video only while its own panel is the selected one and on screen; a
+  // typology can hold several video media now, so every one of them is synced, not just
+  // the first found in the gallery.
   const sync = (gallery: HTMLElement) => {
-    const video = gallery.querySelector<HTMLVideoElement>('video[data-video]');
-    if (!video) return;
-    const shown = !(video.closest('[role="tabpanel"]') as HTMLElement).hidden;
+    const videos = Array.from(gallery.querySelectorAll<HTMLVideoElement>('video[data-video]'));
+    if (!videos.length) return;
     // Inside the desktop pinned slot every gallery intersects at once; only the one the
     // engine marked `is-active` counts as on screen (see desktop/eredita.ts).
     const onScreen = visible.has(gallery) && (!gallery.parentElement?.hasAttribute('data-media-slot') || gallery.classList.contains('is-active'));
-    const play = gallery.querySelector<HTMLElement>('[data-play]');
-    if (shown && onScreen && !reducedMotion) video.play().catch(() => {});
-    else if (!shown || !onScreen) { video.pause(); if (play && reducedMotion) play.hidden = false; }
+    videos.forEach((video) => {
+      const shown = !(video.closest('[role="tabpanel"]') as HTMLElement).hidden;
+      const play = video.parentElement?.querySelector<HTMLElement>('[data-play]');
+      if (shown && onScreen && !reducedMotion) video.play().catch(() => {});
+      else if (!shown || !onScreen) { video.pause(); if (shown && play && reducedMotion) play.hidden = false; }
+    });
   };
 
   const cleanups: (() => void)[] = [];
@@ -31,8 +35,6 @@ export const mountTypologyMedia = (root: HTMLElement) => {
     const strip = gallery.querySelector<HTMLElement>('[role="tablist"]');
     const prev = gallery.querySelector<HTMLButtonElement>('[data-thumbs-prev]');
     const next = gallery.querySelector<HTMLButtonElement>('[data-thumbs-next]');
-    const play = gallery.querySelector<HTMLButtonElement>('[data-play]');
-    const video = gallery.querySelector<HTMLVideoElement>('video[data-video]');
 
     const select = (index: number) => {
       tabs.forEach((tab, i) => { tab.setAttribute('aria-selected', String(i === index)); tab.tabIndex = i === index ? 0 : -1; });
@@ -64,10 +66,13 @@ export const mountTypologyMedia = (root: HTMLElement) => {
     }
 
     // Reduced motion: no autoplay; the poster stays until the person asks for the video.
-    if (play && video) {
+    // Each video medium carries its own play button right beside it in the markup.
+    gallery.querySelectorAll<HTMLVideoElement>('video[data-video]').forEach((video) => {
+      const play = video.parentElement?.querySelector<HTMLButtonElement>('[data-play]');
+      if (!play) return;
       if (reducedMotion) play.hidden = false;
       play.addEventListener('click', () => { play.hidden = true; video.play().catch(() => {}); });
-    }
+    });
   });
 
   const observer = new IntersectionObserver((entries) => {
@@ -85,4 +90,21 @@ export const mountTypologyMedia = (root: HTMLElement) => {
   });
 
   return () => { observer.disconnect(); cleanups.forEach((cleanup) => cleanup()); };
+};
+
+// Masonry gallery videos: the bare `autoplay` attribute is not reliable once the item is
+// below the fold, so each one is started explicitly as it scrolls into view (and paused
+// once it leaves) instead of relying on the browser to honor the HTML attribute alone.
+export const mountGalleryVideos = (root: HTMLElement) => {
+  const videos = Array.from(root.querySelectorAll<HTMLVideoElement>('[data-gallery-video]'));
+  if (!videos.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {};
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const video = entry.target as HTMLVideoElement;
+      if (entry.isIntersecting) video.play().catch(() => {});
+      else video.pause();
+    });
+  }, { threshold: 0.25 });
+  videos.forEach((video) => observer.observe(video));
+  return () => observer.disconnect();
 };

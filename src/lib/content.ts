@@ -49,8 +49,8 @@ export const socialLinks = (contact: Settings): SocialLink[] => {
 // Last publish time of a singleton, for sitemap lastmod (a build date would be a lie).
 export const getUpdatedAt = (id: string) => sanityFetch<string | null>(`*[_id == $id][0]._updatedAt`, { id });
 
-export interface HomeScene { id: 'inicio' | 'eredita' | 'putnam' | 'contacto'; title: string; image: CmsImage }
-export const getHome = (lang: Lang) => { const { l, img } = projections(lang); return sanityFetch<{ scenes: HomeScene[] }>(`*[_id == "home"][0]{ scenes[]{ id, ${l('title')}, ${img('image')} } }`, { lang }); };
+export interface HomeScene { id: 'inicio' | 'eredita' | 'putnam' | 'contacto'; title: string; image: CmsImage; video: string | null }
+export const getHome = (lang: Lang) => { const { l, img } = projections(lang); return sanityFetch<{ scenes: HomeScene[] }>(`*[_id == "home"][0]{ scenes[]{ id, ${l('title')}, ${img('image')}, "video": video.asset->url } }`, { lang }); };
 
 // Ereditá is a line of buildings: the singleton is its landing page, each `proyecto`
 // carries the commercial content and its own route.
@@ -73,37 +73,40 @@ const proyectoCard = (lang: Lang) => { const { l, img } = projections(lang); ret
 // Published projects in landing order; also the source of the static project routes.
 export const getProyectos = (lang: Lang) => sanityFetch<ProyectoCard[]>(`*[_type == "proyecto" && defined(slug.current)] | order(order asc){ ${proyectoCard(lang)} }`, { lang });
 
-// A typology's media, in display order: the video first (when there is one), then the renders.
+// A typology's media, in the editor's order: any mix of videos and renders.
 export type TypologyMedia =
-  | { kind: 'video'; src: string; poster: CmsImage }
+  | { kind: 'video'; src: string; poster: CmsImage; caption: string | null }
   | { kind: 'image'; image: CmsImage; caption: string | null };
+export type GalleryMedia =
+  | { kind: 'video'; src: string; poster: CmsImage; tag: string }
+  | { kind: 'image'; image: CmsImage; tag: string };
 export interface Typology { id: string; tag: string; tone: string; title: string; subtitle: string; media: TypologyMedia[]; description: string; specs: Pair[] }
 export interface Proyecto extends ProyectoCard {
   hero: Eredita['hero'];
   intro: Eredita['intro'];
-  gallery: Heading & { items: { image: CmsImage; tag: string }[] };
+  gallery: Heading & { items: GalleryMedia[] };
   typologies: Heading & { intro: string; items: Typology[] };
   legal: { kicker: string; title: string; lead: string };
   cta: Heading;
 }
 export const getProyecto = async (lang: Lang, slug: string): Promise<Proyecto | null> => {
   const { l, img, heading, pairs } = projections(lang);
-  type Raw = Omit<Proyecto, 'typologies'> & { typologies: Omit<Proyecto['typologies'], 'items'> & { items: (Omit<Typology, 'media'> & { video: string | null; poster: CmsImage | null; images: { image: CmsImage; caption: string | null }[] })[] } };
+  type Raw = Omit<Proyecto, 'typologies'> & { typologies: Omit<Proyecto['typologies'], 'items'> & { items: (Omit<Typology, 'media'> & { images: TypologyMedia[] })[] } };
   const raw = await sanityFetch<Raw | null>(`*[_type == "proyecto" && slug.current == $slug][0]{
     ${proyectoCard(lang)},
     ${erediteHero(lang)}, ${erediteIntro(lang)},
-    gallery{ ${heading()}, "items": coalesce(items[]{ ${img('image')}, ${l('tag')} }, []) },
+    gallery{ ${heading()}, "items": coalesce(items[]{ "kind": select(defined(video.asset) => "video", "image"), ${img('image')}, "src": video.asset->url, "poster": image{ "url": asset->url, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height, crop, hotspot, ${l('alt')}, decorative }, ${l('tag')} }, []) },
     typologies{ ${heading(l('intro'))}, "items": coalesce(items[]{ "id": id.current, ${l('tag')}, tone, ${l('title')}, ${l('subtitle')}, ${l('description')}, ${pairs('specs')},
-      "video": video.asset->url, ${img('poster')},
-      "images": coalesce(images[]{ "image": { "url": asset->url, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height, crop, hotspot, ${l('alt')}, decorative }, ${l('caption')} }, []) }, []) },
+      "images": coalesce(images[]{
+        "kind": select(_type == "typologyVideo" => "video", "image"),
+        _type == "typologyVideo" => { "src": video.asset->url, ${img('poster')}, ${l('caption')} },
+        _type == "captionedImage" => { "image": { "url": asset->url, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height, crop, hotspot, ${l('alt')}, decorative }, ${l('caption')} }
+      }, []) }, []) },
     legal{ ${l('kicker')}, ${l('title')}, ${l('lead')} },
     cta{ ${heading()} }
   }`, { lang, slug });
   if (!raw) return null;
-  const items = raw.typologies.items.map(({ video, poster, images, ...rest }) => ({
-    ...rest,
-    media: [...(video && poster ? [{ kind: 'video' as const, src: video, poster }] : []), ...images.map((entry) => ({ kind: 'image' as const, ...entry }))],
-  }));
+  const items = raw.typologies.items.map(({ images, ...rest }) => ({ ...rest, media: images }));
   return { ...raw, typologies: { ...raw.typologies, items } };
 };
 
@@ -112,14 +115,14 @@ export interface LegalDoc { title: string; description: string; file: { url: str
 export const getLegalDocs = (lang: Lang, projectId: string) => { const { l } = projections(lang); return sanityFetch<LegalDoc[]>(`*[_type == "documentoLegal" && (!defined(proyecto) || proyecto._ref == $projectId)] | order(order asc){ ${l('title')}, ${l('description')}, "file": select(defined(file.asset) => { "url": file.asset->url, "size": file.asset->size }, null), version, validFrom }`, { lang, projectId }); };
 
 export interface Putnam {
-  hero: { kicker: string; title: string; lead: string; image: CmsImage };
+  hero: { kicker: string; title: string; lead: string; image: CmsImage; video: string | null };
   process: { kicker: string; steps: { number: string; title: string; text: string; image: CmsImage | null }[] };
   principles: Heading & { mission: Pair & { text: string; title: string }; vision: Pair & { text: string; title: string }; valuesLabel: string; valuesTitle: string; values: string[] };
   differences: Heading & { items: { number: string; title: string; text: string }[] };
   cta: Heading;
 }
 export const getPutnam = (lang: Lang) => { const { l, img, heading, strings } = projections(lang); return sanityFetch<Putnam>(`*[_id == "putnam"][0]{
-  hero{ ${l('kicker')}, ${l('title')}, ${l('lead')}, ${img('image')} },
+  hero{ ${l('kicker')}, ${l('title')}, ${l('lead')}, ${img('image')}, "video": video.asset->url },
   process{ ${l('kicker')}, steps[]{ number, ${l('title')}, ${l('text')}, ${img('image')} } },
   principles{ ${heading()}, mission{ ${l('label')}, ${l('title')}, ${l('text')} }, vision{ ${l('label')}, ${l('title')}, ${l('text')} }, ${l('valuesLabel')}, ${l('valuesTitle')}, ${strings('values')} },
   differences{ ${heading()}, items[]{ number, ${l('title')}, ${l('text')} } },
@@ -127,7 +130,7 @@ export const getPutnam = (lang: Lang) => { const { l, img, heading, strings } = 
 }`, { lang }); };
 
 export interface Unete {
-  hero: { kicker: string; title: string; lead: string; meta: string[]; image: CmsImage };
+  hero: { kicker: string; title: string; lead: string; meta: string[]; image: CmsImage; video: string | null };
   culture: Heading & { traits: Titled[] };
   profile: Heading & { values: Titled[]; kpis: Pair[] };
   openings: Heading & { emptyKicker: string; emptyTitle: string; emptyText: string[]; cta: string };
@@ -137,7 +140,7 @@ export interface Unete {
   mail: { body: string; whatsapp: string };
 }
 export const getUnete = (lang: Lang) => { const { l, img, heading, pairs, titled, strings } = projections(lang); return sanityFetch<Unete>(`*[_id == "unete"][0]{
-  hero{ ${l('kicker')}, ${l('title')}, ${l('lead')}, ${strings('meta')}, ${img('image')} },
+  hero{ ${l('kicker')}, ${l('title')}, ${l('lead')}, ${strings('meta')}, ${img('image')}, "video": video.asset->url },
   culture{ ${heading()}, ${titled('traits')} },
   profile{ ${heading()}, ${titled('values')}, ${pairs('kpis')} },
   openings{ ${heading()}, ${l('emptyKicker')}, ${l('emptyTitle')}, ${strings('emptyText')}, ${l('cta')} },
@@ -148,7 +151,7 @@ export const getUnete = (lang: Lang) => { const { l, img, heading, pairs, titled
 }`, { lang }); };
 
 export interface Contacto {
-  hero: { kicker: string; title: string; lead: string; image: CmsImage };
+  hero: { kicker: string; title: string; lead: string; image: CmsImage; video: string | null };
   channels: Heading & { kpis: { value: string | null; label: string }[] };
   reasons: Heading & { items: { tag: string; title: string; text: string; cta: string; target: 'whatsapp' | 'form' }[] };
   location: Heading;
@@ -156,24 +159,24 @@ export interface Contacto {
   cta: Heading;
 }
 export const getContacto = (lang: Lang) => { const { l, img, heading } = projections(lang); return sanityFetch<Contacto>(`*[_id == "contacto"][0]{
-  hero{ ${l('kicker')}, ${l('title')}, ${l('lead')}, ${img('image')} },
+  hero{ ${l('kicker')}, ${l('title')}, ${l('lead')}, ${img('image')}, "video": video.asset->url },
   channels{ ${heading()}, kpis[]{ value, ${l('label')} } },
   reasons{ ${heading()}, items[]{ ${l('tag')}, ${l('title')}, ${l('text')}, ${l('cta')}, target } },
   location{ ${heading()} }, form{ ${heading()} }, cta{ ${heading()} }
 }`, { lang }); };
 
-export interface NoticiasPage { hero: { kicker: string; title: string; lead: string; image: CmsImage }; index: Heading & { archive: string }; empty: { title: string; text: string }; cta: Heading }
+export interface NoticiasPage { hero: { kicker: string; title: string; lead: string; image: CmsImage; video: string | null }; index: Heading & { archive: string }; empty: { title: string; text: string }; cta: Heading }
 export const getNoticiasPage = (lang: Lang) => { const { l, img, heading } = projections(lang); return sanityFetch<NoticiasPage>(`*[_id == "noticias"][0]{
-  hero{ ${l('kicker')}, ${l('title')}, ${l('lead')}, ${img('image')} },
+  hero{ ${l('kicker')}, ${l('title')}, ${l('lead')}, ${img('image')}, "video": video.asset->url },
   index{ ${heading('archive')} }, empty{ ${l('title')}, ${l('text')} }, cta{ ${heading()} }
 }`, { lang }); };
 
 export interface NotaImage { url: string; width: number; height: number; alt: string | null; crop?: CmsImage['crop']; hotspot?: CmsImage['hotspot'] }
 export interface NotaSeo { title: string | null; description: string | null; image: NotaImage | null }
-export interface Nota { title: string; slug: string; date: string; updatedAt: string | null; category: string; tags: string[]; excerpt: string; readTime: string | null; image: NotaImage | null; body: unknown[] | null; translation: { slug: string } | null; seo: NotaSeo }
+export interface Nota { title: string; slug: string; date: string; updatedAt: string | null; category: string; tags: string[]; excerpt: string; readTime: string | null; image: NotaImage | null; video: string | null; body: unknown[] | null; translation: { slug: string } | null; seo: NotaSeo }
 const notaImage = (path: string) => `"image": ${path}{ "url": asset->url, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height, crop, hotspot, alt }`;
 const notaFields = `title, "slug": slug.current, date, "updatedAt": _updatedAt, category, "tags": coalesce(tags, []), excerpt, readTime,
-  ${notaImage('image')},
+  ${notaImage('image')}, "video": video.asset->url,
   "seo": { "title": seo.title, "description": seo.description, ${notaImage('seo.image')} },
   body[]{ ..., _type == "image" => { "url": asset->url, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height } },
   "translation": *[_type == "translation.metadata" && references(^._id)][0].translations[language != $lang][0].value->{ "slug": slug.current }`;
