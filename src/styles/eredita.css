@@ -48,23 +48,24 @@
 /* Gallery */
 .ed-gallery { padding: clamp(5rem, 10vw, 9rem) clamp(1.25rem, 3vw, 3.5rem); color: var(--ed-paper); background: var(--ed-ink); }
 .ed-gallery .section-heading { margin-bottom: clamp(3rem, 6vw, 5rem); }
-/* Grid (not CSS columns) so `grid-auto-flow: dense` can fill gaps left by the wide items —
-   real masonry columns leave dead space once an item spans more than one column. */
-.ed-masonry { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: 11rem; grid-auto-flow: dense; gap: 1.25rem; }
-.ed-masonry-item { position: relative; display: block; margin: 0; overflow: hidden; }
-.ed-masonry-item img { display: block; width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; transition: transform 500ms ease; }
+/* CSS columns instead of a fixed-cell grid: each photo/video keeps its own aspect ratio
+   (no forced crop into a cell shaped for something else — a portrait or a wide video would
+   distort under object-fit: cover). Trade-off: the last item per column can fall short of
+   the others, unlike a dense grid, but content never gets cropped to fit an arbitrary cell. */
+.ed-masonry { columns: 2; column-gap: 1.25rem; }
+.ed-masonry-item { position: relative; display: block; margin: 0 0 1.25rem; break-inside: avoid; overflow: hidden; }
+.ed-masonry-item :is(img, video) { display: block; width: 100%; height: auto; cursor: zoom-in; transition: transform 500ms ease; }
 .ed-lightbox { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; padding: 2rem; background: rgba(6, 10, 9, 0.92); }
 .ed-lightbox.is-open { display: flex; }
-.ed-lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.ed-lightbox > :is(img, video) { max-width: 100%; max-height: calc(100% - 4rem); object-fit: contain; }
+.ed-lightbox-controls { position: absolute; bottom: 1rem; left: 50%; display: flex; align-items: center; gap: 0.75rem; width: min(34rem, calc(100% - 2rem)); padding: 0.65rem 0.8rem; border: 1px solid rgba(244, 238, 223, 0.35); border-radius: 999px; background: rgba(6, 10, 9, 0.78); color: var(--ed-paper); transform: translateX(-50%); }
+.ed-lightbox-controls button { border: 0; background: transparent; color: inherit; cursor: pointer; }
+.ed-lightbox-controls input { flex: 1; accent-color: var(--ed-paper); }
 .ed-lightbox-close { position: absolute; top: 1.5rem; right: 1.5rem; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border: 1px solid rgba(244, 238, 223, 0.5); border-radius: 50%; background: rgba(6, 10, 9, 0.6); color: var(--ed-paper); font-size: 1.1rem; cursor: pointer; }
-.ed-masonry-item:hover img { transform: scale(1.035); }
+.ed-masonry-item:hover :is(img, video) { transform: scale(1.035); }
 .ed-masonry-item figcaption { position: absolute; left: 0.9rem; bottom: 0.8rem; padding: 0.3rem 0.6rem; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ed-paper); background: rgba(6, 10, 9, 0.55); opacity: 0; transform: translateY(0.4rem); transition: opacity 220ms ease, transform 220ms ease; }
 .ed-masonry-item:hover figcaption, .ed-masonry-item:focus-within figcaption { opacity: 1; transform: translateY(0); }
-/* A varied rhythm of 1x1/2x1/1x2/2x2 items, dense-packed so nothing leaves a gap. */
-.ed-masonry-item:nth-child(6n+1) { grid-column: span 2; grid-row: span 2; }
-.ed-masonry-item:nth-child(6n+4) { grid-column: span 2; }
-.ed-masonry-item:nth-child(6n+3) { grid-row: span 2; }
-@media (min-width: 1100px) { .ed-masonry { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 13rem; } }
+@media (min-width: 1100px) { .ed-masonry { columns: 3; } }
 
 /* Projects of the line (landing): one wide card per project, complete even when there is a single one. */
 .ed-projects { padding: clamp(5rem, 10vw, 9rem) clamp(1.25rem, 3vw, 3.5rem); color: var(--ed-paper); background: var(--ed-ink); }

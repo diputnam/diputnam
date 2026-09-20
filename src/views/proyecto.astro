@@ -84,9 +84,9 @@ const thumbName = (medium: TypologyMedia) => (medium.kind === 'video' ? ui.eredi
           <h2 id="ed-gallery-title"><Lines text={gallery.title} /></h2>
         </header>
         <div class="ed-masonry" data-reveal-group>
-          {gallery.items.map((item, index) => (
-            <figure class="ed-masonry-item">
-              <CmsImg image={item.image} base={960} widths={CARD_WIDTHS} quality={75} sat={SAT.gallery} sizes={index % 6 === 0 || index % 6 === 3 ? '(min-width: 1100px) 66vw, 100vw' : '(min-width: 1100px) 33vw, 50vw'} loading="lazy" width="1200" height="900" />
+          {gallery.items.map((item) => (
+            <figure class:list={['ed-masonry-item', { 'is-video': item.kind === 'video' }]} role="button" tabindex="0" aria-label={item.tag}>
+              {item.kind === 'video' ? <video poster={remoteImage(imageSrc(item.poster), 960, 70)} autoplay muted loop playsinline preload="metadata" width={item.poster.width} height={item.poster.height} data-gallery-video><source src={item.src} type="video/mp4" /></video> : <CmsImg image={item.image} base={960} widths={CARD_WIDTHS} quality={75} sat={SAT.gallery} sizes="(min-width: 1100px) 33vw, 50vw" loading="lazy" width={item.image.width} height={item.image.height} />}
               <figcaption>{item.tag}</figcaption>
             </figure>
           ))}
