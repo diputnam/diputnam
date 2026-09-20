@@ -101,7 +101,7 @@ a.index-row:hover i, a.index-row:focus-visible i { transform: translate(0.2rem, 
   .index-row i { grid-column: 3; grid-row: 1; }
   .nw-cta { min-height: 0; justify-content: flex-start; padding: 6rem 1rem 3.5rem; }
   .nw-cta h2 { margin: 1.25rem 0 2rem; font-size: clamp(3rem, 15vw, 5.5rem); }
-  .nw-cta .cta-mark { position: static; width: 72vw; margin: 2.5rem -1rem 0 auto; }
+  .nw-cta .cta-mark { position: static; width: min(50%, 14rem); margin: 3rem auto 0; }
   .noticias-page .cta-actions { flex-direction: column; }
 }
 

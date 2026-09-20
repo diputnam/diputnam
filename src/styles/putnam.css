@@ -160,7 +160,7 @@
   .institutional-cta h2 { margin: 1.25rem 0 2.5rem; font-size: clamp(3rem, 15vw, 5.5rem); }
   .cta-actions { flex-direction: column; }
   /* In flow below the links (the absolute mark sat on them): bleeds off the right edge like before. */
-  .cta-mark { position: static; display: block; width: 72vw; margin: 2.5rem -1rem 0 auto; }
+  .cta-mark { position: static; display: block; width: min(50%, 14rem); margin: 3rem auto 0; }
   .institutional-cta.is-in .cta-mark[data-reveal] { opacity: 0.32; } /* the section reveal would take it to 1 */
   .principles, .differences, .institutional-cta, .site-footer--flow { content-visibility: auto; contain-intrinsic-size: auto 50rem; }
 }

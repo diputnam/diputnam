@@ -76,7 +76,7 @@ const article = { headline: nota.title, published: nota.date, modified: nota.upd
         <h2 id="nw-cta-title">{cta.title.replaceAll('\n', ' ')}</h2>
         <p data-reveal-group>{cta.text}</p>
         <div class="cta-actions" data-reveal-group><a href={`mailto:${contact.email}`}>{ui.writeUs} <Arrow dir="up-right" /></a><a href={contact.whatsapp} target="_blank" rel="noreferrer">{ui.whatsapp} <Arrow dir="up-right" /></a></div>
-        <Image class="cta-mark" src={putnamMark} widths={[400, 800]} sizes="(max-width: 767px) 72vw, min(42vw, 42rem)" format="webp" alt="" aria-hidden="true" />
+        <Image class="cta-mark" src={putnamMark} widths={[400, 800]} sizes="(max-width: 767px) min(50vw, 14rem), min(42vw, 42rem)" format="webp" alt="" aria-hidden="true" />
       </section>
     </main>
     <ContactFooter lang={lang} contact={contact} />

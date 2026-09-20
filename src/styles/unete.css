@@ -151,7 +151,7 @@ a.index-row:hover i, a.index-row:focus-visible i { transform: translate(0.2rem, 
   .pin-counter b { font-size: 4rem; }
   .un-cta { min-height: 0; justify-content: flex-start; padding: 6rem 1rem 3.5rem; }
   .un-cta h2 { margin: 1.25rem 0 2rem; font-size: clamp(3rem, 15vw, 5.5rem); }
-  .un-cta .cta-mark { position: static; width: 72vw; margin: 2.5rem -1rem 0 auto; }
+  .un-cta .cta-mark { position: static; width: min(50%, 14rem); margin: 3rem auto 0; }
   .unete-page .cta-actions { flex-direction: column; }
 }
 

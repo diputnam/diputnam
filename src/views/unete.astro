@@ -116,7 +116,7 @@ const contactHref = pages.contacto[lang];
         <h2 id="un-cta-title"><Lines text={apply.title} /></h2>
         <p data-reveal-group>{apply.text}</p>
         <div class="cta-actions" data-reveal-group><a href={sendProfile}>{ui.unete.sendProfile} <Arrow dir="up-right" /></a><a href={profileWhatsapp} target="_blank" rel="noreferrer">{ui.whatsapp} <Arrow dir="up-right" /></a><a href={contactHref}>{ui.goToContact} <Arrow dir="up-right" /></a></div>
-        <Image class="cta-mark" src={putnamMark} widths={[400, 800]} sizes="(max-width: 767px) 72vw, min(42vw, 42rem)" format="webp" alt="" aria-hidden="true" />
+        <Image class="cta-mark" src={putnamMark} widths={[400, 800]} sizes="(max-width: 767px) min(50vw, 14rem), min(42vw, 42rem)" format="webp" alt="" aria-hidden="true" />
       </section>
     </main>
     <ContactFooter lang={lang} contact={contact} />
