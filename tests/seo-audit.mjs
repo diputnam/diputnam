@@ -7,7 +7,7 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 
 const dist = process.env.DIST_DIR ?? 'dist';
-const SITE = 'https://diputnam.com';
+const SITE = 'https://www.diputnam.com';
 const failures = [];
 const fail = (message) => failures.push(message);
 

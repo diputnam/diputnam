@@ -19,4 +19,4 @@ User-agent: DuckAssistBot
 User-agent: meta-externalagent
 Allow: /
 
-Sitemap: https://diputnam.com/sitemap.xml
+Sitemap: https://www.diputnam.com/sitemap.xml

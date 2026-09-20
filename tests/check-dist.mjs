@@ -8,7 +8,7 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 
 const dist = process.env.DIST_DIR ?? 'dist';
-const SITE = 'https://diputnam.com';
+const SITE = 'https://www.diputnam.com';
 const failures = [];
 
 const walk = async (dir) => {
@@ -44,7 +44,7 @@ for (const file of htmlFiles) {
   const route = routeOf(file);
   const expectedLang = route.startsWith('/en/') ? 'en' : 'es';
   if (lang !== expectedLang) failures.push(`${name}: <html lang="${lang}"> (expected "${expectedLang}")`);
-  if (/https?:\/\/(?:localhost|127\.0\.0\.1|[\w.-]+\.workers\.dev|www\.diputnam\.com)[:/]/.test(html)) failures.push(`${name}: references a non-canonical host`);
+  if (/https?:\/\/(?:localhost|127\.0\.0\.1|[\w.-]+\.workers\.dev|diputnam\.com)[:/]/.test(html)) failures.push(`${name}: references a non-canonical host`);
   if (!isNoindex(html)) {
     const canonicals = [...html.matchAll(/<link rel="canonical" href="([^"]+)"/g)].map(([, href]) => href);
     if (canonicals.length !== 1) failures.push(`${name}: expected one canonical, found ${canonicals.length}`);

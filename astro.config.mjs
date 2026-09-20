@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   // Canonical origin. Fixed on purpose: a preview on *.vercel.app must canonicalize to
   // production, never to itself (see openspec seo-geo-foundation, D1).
-  site: 'https://diputnam.com',
+  site: 'https://www.diputnam.com',
   trailingSlash: 'always',
   build: { inlineStylesheets: 'always' },
   // Spanish keeps the unprefixed routes; English lives under /en/ with its own slugs

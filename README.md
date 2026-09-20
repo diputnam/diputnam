@@ -80,7 +80,7 @@ Solo se publica contenido con **Publish**. Cada publicación dispara un webhook 
 
 ## Dominio, SEO y motores generativos
 
-El dominio canónico es `https://diputnam.com` (`site` en `astro.config.mjs`). Toda URL absoluta del sitio —`canonical`, `hreflang`, Open Graph, sitemap, `llms.txt`— sale de ahí, también en vistas previas en `*.vercel.app`, para que solo el dominio final se indexe.
+El dominio canónico es `https://www.diputnam.com` (`site` en `astro.config.mjs`). Toda URL absoluta del sitio —`canonical`, `hreflang`, Open Graph, sitemap, `llms.txt`— sale de ahí, también en vistas previas en `*.vercel.app`, para que solo el dominio final se indexe.
 
 Qué publica cada build en la raíz de `dist/`:
 
@@ -97,8 +97,8 @@ Cada página lleva `canonical`, Open Graph/Twitter con su portada (`public/og/<p
 
 ### Cuando el dominio apunte a Vercel
 
-1. Vercel → Settings → Domains: añadir `diputnam.com` **y** `www.diputnam.com`, con `www` marcado como *Redirect to* `diputnam.com` (301). HTTPS lo gestiona Vercel; la barra final la fija `trailingSlash: always` de Astro.
-2. Verificar `curl -I https://www.diputnam.com/eredita` → `301` a `https://diputnam.com/eredita/` y `https://diputnam.com/proyectos/` → `404`.
-3. [Google Search Console](https://search.google.com/search-console) y [Bing Webmaster Tools](https://www.bing.com/webmasters): verificar la propiedad (registro DNS TXT en el proveedor del dominio) y enviar `https://diputnam.com/sitemap.xml`.
+1. Vercel → Settings → Domains: añadir `www.diputnam.com` **y** `diputnam.com`, con el apex marcado como *Redirect to* `www.diputnam.com` (308). HTTPS lo gestiona Vercel; la barra final la fija `trailingSlash: always` de Astro.
+2. Verificar `curl -I https://diputnam.com/eredita` → `308` a `https://www.diputnam.com/eredita/` y `https://www.diputnam.com/proyectos/` → `404`.
+3. [Google Search Console](https://search.google.com/search-console) y [Bing Webmaster Tools](https://www.bing.com/webmasters): verificar la propiedad (registro DNS TXT en el proveedor del dominio) y enviar `https://www.diputnam.com/sitemap.xml`.
 4. Crear o reclamar el [Perfil de Negocio de Google](https://business.google.com) de la oficina de San Miguel y añadir su URL, junto a las redes, en **Datos de la empresa (SEO) → Redes y perfiles**.
 5. Comprobar una URL de cada tipo en la [prueba de resultados enriquecidos](https://search.google.com/test/rich-results), el [Sharing Debugger](https://developers.facebook.com/tools/debug/) de Meta y el [Post Inspector](https://www.linkedin.com/post-inspector/) de LinkedIn.

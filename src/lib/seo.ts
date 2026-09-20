@@ -4,7 +4,7 @@
 import { pages, t, type Lang, type PageKey } from '../i18n';
 import type { Settings } from './content';
 
-export const SITE = 'https://diputnam.com';
+export const SITE = 'https://www.diputnam.com';
 export const SITE_NAME = 'Putnam';
 
 export const absolute = (path: string) => new URL(path, SITE).toString();
