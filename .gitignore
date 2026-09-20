@@ -7,3 +7,13 @@ dist/
 .impeccable/config.local.json
 tests/.artifacts/
 .~lock.*#
+
+# AI and agent tooling
+.agents/
+.claude/
+.codex/
+.impeccable/
+graphify-out/
+openspec/
+AGENTS.md
+CLAUDE.md
