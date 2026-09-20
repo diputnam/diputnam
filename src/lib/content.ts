@@ -106,6 +106,7 @@ export const getProyecto = async (lang: Lang, slug: string): Promise<Proyecto | 
     cta{ ${heading()} }
   }`, { lang, slug });
   if (!raw) return null;
+  if (slug === 'eredita-art') console.log('DEBUG gallery kinds', lang, JSON.stringify(raw.gallery.items.map((i) => i.kind)));
   const items = raw.typologies.items.map(({ images, ...rest }) => ({ ...rest, media: images }));
   return { ...raw, typologies: { ...raw.typologies, items } };
 };
