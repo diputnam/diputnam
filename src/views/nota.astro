@@ -10,7 +10,7 @@ import SiteHead from '../components/SiteHead.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { formatDate, notaPath, otherLang, pages, t, type Lang } from '../i18n';
 import { getNoticiasPage, getSettings, type Nota } from '../lib/content';
-import { CARD_WIDTHS, HERO_WIDTHS, SAT, ogUrl } from '../lib/images';
+import { CARD_WIDTHS, HERO_WIDTHS, SAT, imageSrc, ogUrl, remoteImage } from '../lib/images';
 import { absolute, truncate } from '../lib/seo';
 import '../styles/global.css';
 import '../styles/noticias.css';
@@ -55,7 +55,7 @@ const article = { headline: nota.title, published: nota.date, modified: nota.upd
           </div>
           {heroImage && (
             <figure class="hero-frame" data-parallax>
-              <CmsImg image={heroImage} base={1280} widths={HERO_WIDTHS} quality={72} sat={SAT.hero} sizes="100vw" width="2200" height="1467" loading="eager" fetchpriority="high" />
+              {nota.video ? <video poster={remoteImage(imageSrc(heroImage), 1280, 70)} autoplay muted loop playsinline aria-hidden="true"><source src={nota.video} type="video/mp4" /></video> : <CmsImg image={heroImage} base={1280} widths={HERO_WIDTHS} quality={72} sat={SAT.hero} sizes="100vw" width="2200" height="1467" loading="eager" fetchpriority="high" />}
             </figure>
           )}
         </section>

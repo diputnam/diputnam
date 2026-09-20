@@ -23,6 +23,7 @@ export const nota = defineType({
     defineField({ name: 'excerpt', title: 'Extracto', type: 'text', rows: 4, validation: (rule) => rule.required().max(400) }),
     defineField({ name: 'readTime', title: 'Tiempo de lectura', type: 'string', description: 'P. ej. "4 min".' }),
     defineField({ name: 'image', title: 'Imagen destacada', type: 'image', options: { hotspot: true }, fields: [defineField({ name: 'alt', title: 'Texto alternativo', type: 'string' })] }),
+    defineField({ name: 'video', title: 'Video de hero (opcional, mp4)', type: 'file', options: { accept: 'video/mp4' }, description: 'La imagen destacada funciona como póster. Se reproduce automáticamente, sin sonido y en bucle.', validation: (rule) => rule.custom((value, context) => (!value || context.document?.image ? true : 'Añade una imagen destacada para usarla como póster.')) }),
     defineField({ name: 'body', title: 'Cuerpo', type: 'richText' }),
     // Optional overrides for search and social previews; the site derives them from
     // title/excerpt/image when empty.

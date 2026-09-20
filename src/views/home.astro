@@ -1,7 +1,7 @@
 ---
 import { pages, t, type Lang } from '../i18n';
 import { getHome, getSettings } from '../lib/content';
-import { HERO_WIDTHS, SAT } from '../lib/images';
+import { HERO_WIDTHS, SAT, imageSrc, remoteImage } from '../lib/images';
 import CmsImg from '../components/CmsImg.astro';
 import ContactFooter from '../components/ContactFooter.astro';
 import Lines from '../components/Lines.astro';
@@ -39,7 +39,7 @@ const sceneHref = (id: string) => (id === 'putnam' || id === 'eredita' || id ===
         <div class="home-stage" data-stage>
           {scenes.map((panel, index) => (
             <section class:list={["panel", { "panel--intro": index === 0, "is-active": index === 0, "is-visible": index === 0 }]} id={panel.id} data-panel data-index={index} style={sweep(index, 'scene-enter', 'scene-exit')}>
-              <CmsImg class="panel-media" image={panel.image} base={1280} widths={HERO_WIDTHS} quality={75} sat={SAT.panel} sizes="100vw" width="2200" height="1467" loading={index < 2 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : undefined} decoding="sync" />
+              {panel.video ? <video class="panel-media" poster={remoteImage(imageSrc(panel.image), 1280, 70)} autoplay muted loop playsinline aria-hidden="true"><source src={panel.video} type="video/mp4" /></video> : <CmsImg class="panel-media" image={panel.image} base={1280} widths={HERO_WIDTHS} quality={75} sat={SAT.panel} sizes="100vw" width="2200" height="1467" loading={index < 2 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : undefined} decoding="sync" />}
               <div class="panel-shade"></div>
               <div class="panel-content" style={sweep(index, 'title-in', 'title-out')}>
                 {index === 0 ? <h1><a href={`#${panel.id}`}><Lines text={panel.title} mode="hard" /></a></h1> : <h2><a href={sceneHref(panel.id)}><Lines text={panel.title} mode="hard" /></a></h2>}

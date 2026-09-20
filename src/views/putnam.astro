@@ -9,7 +9,7 @@ import SiteHead from '../components/SiteHead.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { t, type Lang } from '../i18n';
 import { getPutnam, getSettings } from '../lib/content';
-import { CARD_WIDTHS, SAT } from '../lib/images';
+import { CARD_WIDTHS, SAT, imageSrc, remoteImage } from '../lib/images';
 import '../styles/global.css';
 import '../styles/putnam.css';
 
@@ -39,7 +39,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
           <a class="hero-index" href="#enfoque">{ui.putnam.seeApproach} <Arrow /></a>
         </div>
         <figure class="hero-frame">
-          <CmsImg image={hero.image} base={1280} widths={[640, 960, 1280]} quality={72} sat={SAT.hero} sizes="100vw" width="1800" height="1200" loading="eager" fetchpriority="high" />
+          {hero.video ? <video poster={remoteImage(imageSrc(hero.image), 1280, 70)} autoplay muted loop playsinline aria-hidden="true"><source src={hero.video} type="video/mp4" /></video> : <CmsImg image={hero.image} base={1280} widths={[640, 960, 1280]} quality={72} sat={SAT.hero} sizes="100vw" width="1800" height="1200" loading="eager" fetchpriority="high" />}
         </figure>
       </section>
 

@@ -33,7 +33,7 @@
 .motion-pending .institutional-hero :is(.section-kicker, h1, .hero-lead) { opacity: 0; visibility: hidden; }
 .hero-frame { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--putnam-deep); contain: paint; }
 .hero-frame::after { position: absolute; inset: 0; content: ''; background: linear-gradient(180deg, rgba(0, 25, 23, 0.28) 0%, transparent 42%, rgba(0, 25, 23, 0.82) 100%), linear-gradient(90deg, rgba(0, 25, 23, 0.28), transparent 64%); }
-.hero-frame img { width: 100%; height: 115%; object-fit: cover; transform: scale(1.02); backface-visibility: hidden; }
+.hero-frame :is(img, video) { width: 100%; height: 115%; object-fit: cover; transform: scale(1.02); backface-visibility: hidden; }
 .hero-index { display: inline-flex; min-height: 2.75rem; margin-top: 1rem; padding: 0; align-items: center; gap: 1.2rem; color: var(--putnam-paper); font-size: 0.68rem; letter-spacing: 0.11em; text-transform: uppercase; }
 .hero-index span { transition: transform 180ms ease; }
 .hero-index:hover span { transform: translateX(0.2rem); }
@@ -125,7 +125,7 @@
   .hero-lead { width: min(28rem, 92%); }
   .hero-index { margin-top: 1rem; }
   .hero-frame { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; }
-  .hero-frame img { height: 100%; transform: none; }
+  .hero-frame :is(img, video) { height: 100%; transform: none; }
   .structural-line--hero { right: 14%; bottom: 17rem; left: -2rem; transform: rotate(-9deg); }
   /* No sticky stage: kicker + big counter + rail on top, then a native swipe track
      (`horizontal-track.ts`). Each step keeps its own image inside its card. */

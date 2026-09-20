@@ -10,7 +10,7 @@ import SiteHead from '../components/SiteHead.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { t, type Lang } from '../i18n';
 import { getContacto, getSettings } from '../lib/content';
-import { HERO_WIDTHS, SAT } from '../lib/images';
+import { HERO_WIDTHS, SAT, imageSrc, remoteImage } from '../lib/images';
 import '../styles/global.css';
 import '../styles/contacto.css';
 
@@ -43,7 +43,7 @@ const [emailUser, emailDomain] = contact.email.split('@');
           <div class="hero-meta"><span>{contact.hoursShort}</span><span>{ui.contacto.responseIn(contact.responseTime)}</span></div>
         </div>
         <figure class="hero-frame" data-parallax>
-          <CmsImg image={hero.image} base={1280} widths={HERO_WIDTHS} quality={72} sat={SAT.hero} sizes="100vw" width="2200" height="1467" loading="eager" fetchpriority="high" />
+          {hero.video ? <video poster={remoteImage(imageSrc(hero.image), 1280, 70)} autoplay muted loop playsinline aria-hidden="true"><source src={hero.video} type="video/mp4" /></video> : <CmsImg image={hero.image} base={1280} widths={HERO_WIDTHS} quality={72} sat={SAT.hero} sizes="100vw" width="2200" height="1467" loading="eager" fetchpriority="high" />}
         </figure>
       </section>
 

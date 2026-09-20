@@ -9,7 +9,7 @@ import SiteHead from '../components/SiteHead.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { formatDate, notaPath, t, type Lang } from '../i18n';
 import { getNotas, getNoticiasPage, getSettings } from '../lib/content';
-import { CARD_WIDTHS, HERO_WIDTHS, SAT } from '../lib/images';
+import { CARD_WIDTHS, HERO_WIDTHS, SAT, imageSrc, remoteImage } from '../lib/images';
 import '../styles/global.css';
 import '../styles/noticias.css';
 
@@ -40,7 +40,7 @@ const categorias = [ui.noticias.all, ...new Set(notas.map((n) => n.category))].m
           <div class="hero-meta"><span>{ui.noticias.published(pad(notas.length))}</span>{destacada && <span>{ui.noticias.latest} · {formatDate(lang, destacada.date)}</span>}</div>
         </div>
         <figure class="hero-frame" data-parallax>
-          <CmsImg image={hero.image} base={1280} widths={HERO_WIDTHS} quality={72} sat={SAT.hero} sizes="100vw" width="2200" height="1467" loading="eager" fetchpriority="high" />
+          {hero.video ? <video poster={remoteImage(imageSrc(hero.image), 1280, 70)} autoplay muted loop playsinline aria-hidden="true"><source src={hero.video} type="video/mp4" /></video> : <CmsImg image={hero.image} base={1280} widths={HERO_WIDTHS} quality={72} sat={SAT.hero} sizes="100vw" width="2200" height="1467" loading="eager" fetchpriority="high" />}
         </figure>
       </section>
 

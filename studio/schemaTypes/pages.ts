@@ -3,6 +3,7 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
 export const kicker = defineField({ name: 'kicker', title: 'Kicker', type: 'localeString' });
 export const title = defineField({ name: 'title', title: 'Título', type: 'localeTitle', validation: (rule) => rule.required() });
 export const text = defineField({ name: 'text', title: 'Texto', type: 'localeText' });
+export const heroVideo = defineField({ name: 'video', title: 'Video (opcional, mp4)', type: 'file', options: { accept: 'video/mp4' }, description: 'Se reproduce automáticamente, sin sonido y en bucle. Sube H.264, máximo 1280 px de ancho y 5 MB.' });
 const items = (name: string, label: string) => defineField({ name, title: label, type: 'array', of: [defineArrayMember({ type: 'titledItem' })] });
 const numberedItems = (name: string, label: string) =>
   defineField({
@@ -22,7 +23,7 @@ export const erediteHeroFields = [
   kicker, title,
   defineField({ name: 'sub', title: 'Subtítulo', type: 'localeString' }),
   defineField({ name: 'poster', title: 'Imagen', type: 'localeImage', validation: (rule) => rule.required() }),
-  defineField({ name: 'video', title: 'Video (opcional, mp4)', type: 'file', options: { accept: 'video/mp4' } }),
+  heroVideo,
 ];
 export const erediteIntroFields = [
   kicker, title,
@@ -45,6 +46,7 @@ export const home = defineType({
           defineField({ name: 'id', title: 'Identificador', type: 'string', options: { list: ['inicio', 'eredita', 'putnam', 'contacto'] }, validation: (rule) => rule.required() }),
           defineField({ name: 'title', title: 'Título', type: 'localeTitle', validation: (rule) => rule.required().custom((value) => ((value as { es?: string })?.es?.length ?? 0) <= 32 || 'Máximo 32 caracteres en español para que quepa en dos renglones.') }),
           defineField({ name: 'image', title: 'Imagen', type: 'localeImage', validation: (rule) => rule.required() }),
+          heroVideo,
         ],
         preview: { select: { title: 'title.es', subtitle: 'id', media: 'image' } },
       })],
@@ -73,7 +75,7 @@ export const putnam = defineType({
   title: 'La firma',
   type: 'document',
   fields: [
-    section('hero', 'Hero', [kicker, title, defineField({ name: 'lead', title: 'Entrada', type: 'localeText' }), defineField({ name: 'image', title: 'Imagen', type: 'localeImage', validation: (rule) => rule.required() })]),
+    section('hero', 'Hero', [kicker, title, defineField({ name: 'lead', title: 'Entrada', type: 'localeText' }), defineField({ name: 'image', title: 'Imagen', type: 'localeImage', validation: (rule) => rule.required() }), heroVideo]),
     section('process', 'Proceso', [kicker, numberedItems('steps', 'Etapas')]),
     section('principles', 'Principios', [
       kicker, title,
@@ -98,6 +100,7 @@ export const unete = defineType({
       kicker, title, defineField({ name: 'lead', title: 'Entrada', type: 'localeText' }),
       defineField({ name: 'meta', title: 'Líneas de meta', type: 'array', of: [defineArrayMember({ type: 'localeString' })] }),
       defineField({ name: 'image', title: 'Imagen', type: 'localeImage', validation: (rule) => rule.required() }),
+      heroVideo,
     ]),
     section('culture', 'Cultura', [kicker, title, text, items('traits', 'Rasgos')]),
     section('profile', 'Perfil', [kicker, title, text, items('values', 'Valores'), defineField({ name: 'kpis', title: 'Cifras', type: 'array', of: [defineArrayMember({ type: 'labelValue' })] })]),
@@ -124,7 +127,7 @@ export const contacto = defineType({
   title: 'Contacto',
   type: 'document',
   fields: [
-    section('hero', 'Hero', [kicker, title, defineField({ name: 'lead', title: 'Entrada', type: 'localeText' }), defineField({ name: 'image', title: 'Imagen', type: 'localeImage', validation: (rule) => rule.required() })]),
+    section('hero', 'Hero', [kicker, title, defineField({ name: 'lead', title: 'Entrada', type: 'localeText' }), defineField({ name: 'image', title: 'Imagen', type: 'localeImage', validation: (rule) => rule.required() }), heroVideo]),
     section('channels', 'Canales', [
       kicker, title, text,
       defineField({
@@ -158,7 +161,7 @@ export const noticias = defineType({
   title: 'Noticias (portada)',
   type: 'document',
   fields: [
-    section('hero', 'Hero', [kicker, title, defineField({ name: 'lead', title: 'Entrada', type: 'localeText' }), defineField({ name: 'image', title: 'Imagen', type: 'localeImage', validation: (rule) => rule.required() })]),
+    section('hero', 'Hero', [kicker, title, defineField({ name: 'lead', title: 'Entrada', type: 'localeText' }), defineField({ name: 'image', title: 'Imagen', type: 'localeImage', validation: (rule) => rule.required() }), heroVideo]),
     section('index', 'Índice', [kicker, title, defineField({ name: 'archive', title: 'Etiqueta de archivo', type: 'string', description: 'P. ej. el año.' })]),
     section('empty', 'Sin notas', [title, text]),
     section('cta', 'Cierre', [kicker, title, text]),
