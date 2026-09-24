@@ -93,6 +93,7 @@ export const es = {
       submit: 'Enviar consulta',
       sending: 'Enviando…',
       retry: 'Intentar de nuevo',
+      successTitle: 'Mensaje enviado.',
       success: 'Gracias. Recibimos tu consulta y te contactaremos pronto.',
       error: 'No pudimos enviar tu consulta. Inténtalo de nuevo.',
       required: 'Completa este campo.',

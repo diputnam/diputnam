@@ -92,6 +92,7 @@ export const en: Dictionary = {
       submit: 'Send enquiry',
       sending: 'Sending…',
       retry: 'Try again',
+      successTitle: 'Message sent.',
       success: 'Thank you. We received your enquiry and will contact you soon.',
       error: 'We could not send your enquiry. Please try again.',
       required: 'Complete this field.',

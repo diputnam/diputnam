@@ -117,6 +117,14 @@ a.index-row:hover i, a.index-row:focus-visible i { transform: translate(0.2rem, 
 .f-submit button:hover span, .f-submit button:focus-visible span { transform: translateX(0.3rem); }
 .f-status { grid-column: 3; margin: 0.8rem 0 0; font-size: 0.78rem; line-height: 1.5; }
 .f-honeypot { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.f-success { min-height: clamp(22rem, 42vw, 32rem); padding: clamp(2rem, 5vw, 5rem); border: 1px solid rgba(244, 238, 223, 0.18); color: var(--putnam-paper); background: var(--putnam-deep); text-align: center; }
+.f-success:not([hidden]) { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.f-success > span { display: grid; width: 5rem; height: 5rem; margin-bottom: 2.5rem; border: 1px solid rgba(244, 238, 223, 0.28); border-radius: 50%; place-items: center; color: var(--putnam-deep); background: var(--putnam-sand); }
+.f-success svg { width: 2.4rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.f-success h3 { max-width: 18ch; margin: 0; font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 500; line-height: 0.95; letter-spacing: -0.04em; }
+.f-success p { max-width: 32rem; margin: 1.5rem 0 0; color: rgba(244, 238, 223, 0.72); font-size: clamp(0.9rem, 1.2vw, 1.05rem); line-height: 1.6; }
+.ct-form form[data-state="success"] { border-top: 0; }
+.ct-form form[data-state="success"] > :not(.f-success) { display: none; }
 
 .ct-cta { position: relative; display: flex; min-height: 100dvh; overflow: hidden; padding: 8rem var(--gutter) 6rem; flex-direction: column; justify-content: flex-end; color: var(--putnam-paper); background: var(--putnam-green); }
 .ct-cta h2 { position: relative; z-index: 1; max-width: 72rem; margin: 3rem 0 2rem; font-size: clamp(3.4rem, 8.2vw, 8.4rem); font-weight: 500; line-height: 0.89; letter-spacing: -0.06em; }

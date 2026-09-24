@@ -4,6 +4,7 @@ if (form) {
   const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
   const label = form.querySelector<HTMLElement>('[data-submit-label]');
   const status = form.querySelector<HTMLElement>('[data-form-status]');
+  const success = form.querySelector<HTMLElement>('[data-form-success]');
   const fields = Array.from(form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('input, textarea, select'));
   let sending = false;
 
@@ -12,6 +13,7 @@ if (form) {
     if (button) button.disabled = state === 'loading';
     if (label) label.textContent = state === 'loading' ? form.dataset.sending ?? '' : state === 'error' ? form.dataset.retry ?? '' : form.dataset.submit ?? '';
     if (status) status.textContent = message;
+    if (success) success.hidden = state !== 'success';
   };
 
   const validate = () => {

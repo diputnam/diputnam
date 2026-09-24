@@ -37,6 +37,14 @@ const email = JSON.parse(sent.options.body);
 assert.equal(email.reply_to, valid.email);
 assert.equal(email.to[0], env.CONTACT_TO_EMAIL);
 assert.match(email.text, /Empresa: Analytical Engines/);
+assert.match(email.html, /PUTNAM/);
+assert.match(email.html, /Responder consulta/);
+
+await run(success, request({ ...valid, nombre: '<script>alert(1)</script>', mensaje: '<b>Hola</b>' }));
+const escapedEmail = JSON.parse(sent.options.body);
+assert.match(escapedEmail.html, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
+assert.match(escapedEmail.html, /&lt;b&gt;Hola&lt;\/b&gt;/);
+assert.doesNotMatch(escapedEmail.html, /<script>|<b>Hola<\/b>/);
 
 let calls = 0;
 const counting = createContactHandler({ env, fetchImpl: async () => { calls += 1; return { ok: true }; } });

@@ -92,7 +92,7 @@ const [emailUser, emailDomain] = contact.email.split('@');
           <p data-reveal-group>{formCopy.text?.replace('{responseTime}', contact.responseTime)}</p>
         </header>
         <form action="#" aria-label={form.aria} data-contact-form data-submit={form.submit} data-sending={form.sending} data-retry={form.retry} data-success={form.success} data-error={form.error} data-required={form.required} data-invalid-email={form.invalidEmail}>
-          <div data-reveal-group>
+          <div data-form-fields data-reveal-group>
             <div class="f-row"><span>01</span><label for="ct-nombre">{form.name}</label><input id="ct-nombre" name="nombre" type="text" autocomplete="name" maxlength="120" required placeholder={form.namePlaceholder} /></div>
             <div class="f-row"><span>02</span><label for="ct-empresa">{form.company}</label><input id="ct-empresa" name="empresa" type="text" autocomplete="organization" maxlength="160" placeholder={form.companyPlaceholder} /></div>
             <div class="f-row"><span>03</span><label for="ct-email">{form.email}</label><input id="ct-email" name="email" type="email" autocomplete="email" maxlength="254" required placeholder={form.emailPlaceholder} /></div>
@@ -102,6 +102,7 @@ const [emailUser, emailDomain] = contact.email.split('@');
           </div>
           <div class="f-honeypot" aria-hidden="true"><label for="ct-website">Website</label><input id="ct-website" name="website" type="text" tabindex="-1" autocomplete="off" /></div>
           <div class="f-submit"><p>{form.consent}</p><button type="submit"><b data-submit-label>{form.submit}</b> <Arrow /></button><p class="f-status" role="status" aria-live="polite" aria-atomic="true" data-form-status></p></div>
+          <div class="f-success" role="status" aria-live="polite" aria-atomic="true" data-form-success hidden><span aria-hidden="true"><svg viewBox="0 0 32 32"><path d="m7 16 6 6L25 10" /></svg></span><h3>{form.successTitle}</h3><p>{form.success}</p></div>
         </form>
       </section>
 

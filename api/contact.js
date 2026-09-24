@@ -18,6 +18,7 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const reply = (response, status, body) => response.status(status).json(body);
 const clean = (value, limit) => typeof value === 'string' ? value.trim().slice(0, limit + 1) : '';
+const escapeHtml = (value) => value.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
 
 const parseBody = (request) => {
   const contentLength = Number(request.headers?.['content-length'] ?? 0);
@@ -54,6 +55,14 @@ export const createContactHandler = ({ env = process.env, fetchImpl = fetch } = 
     'Mensaje:',
     data.mensaje,
   ].join('\n');
+  const details = [
+    ['Nombre', data.nombre],
+    ['Empresa', data.empresa || '—'],
+    ['Correo', data.email],
+    ['Teléfono', data.telefono || '—'],
+    ['Motivo', data.motivo],
+  ].map(([label, value]) => `<tr><td style="padding:14px 0;border-bottom:1px solid #d8ccb7;color:#60706d;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;width:120px">${label}</td><td style="padding:14px 0;border-bottom:1px solid #d8ccb7;color:#003a36;font-size:16px;font-weight:600">${escapeHtml(value)}</td></tr>`).join('');
+  const html = `<!doctype html><html><body style="margin:0;background:#e8deca;font-family:Arial,sans-serif;color:#003a36"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#e8deca"><tr><td align="center" style="padding:32px 16px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#f4eedf;border:1px solid #d8ccb7"><tr><td style="padding:36px 40px;background:#003a36;color:#f4eedf"><div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;opacity:.7">Nueva consulta</div><div style="margin-top:10px;font-size:30px;font-weight:700;letter-spacing:-.04em">PUTNAM</div></td></tr><tr><td style="padding:36px 40px"><h1 style="margin:0 0 26px;font-size:28px;line-height:1.15;font-weight:600">${escapeHtml(data.motivo)}</h1><table role="presentation" width="100%" cellspacing="0" cellpadding="0">${details}</table><div style="margin-top:30px;color:#60706d;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase">Mensaje</div><div style="margin-top:10px;padding:22px;background:#eee5d3;color:#003a36;font-size:16px;line-height:1.6;white-space:pre-wrap">${escapeHtml(data.mensaje)}</div><a href="mailto:${escapeHtml(data.email)}" style="display:inline-block;margin-top:28px;padding:15px 22px;background:#004b46;color:#f4eedf;text-decoration:none;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Responder consulta&nbsp;&nbsp;→</a></td></tr><tr><td style="padding:20px 40px;border-top:1px solid #d8ccb7;color:#60706d;font-size:11px;line-height:1.5">Enviado desde el formulario de diputnam.com</td></tr></table></td></tr></table></body></html>`;
 
   try {
     const result = await fetchImpl('https://api.resend.com/emails', {
@@ -65,6 +74,7 @@ export const createContactHandler = ({ env = process.env, fetchImpl = fetch } = 
         reply_to: data.email,
         subject: `Nueva consulta Putnam: ${data.motivo}`,
         text,
+        html,
       }),
     });
     if (!result.ok) return reply(response, 502, { ok: false });

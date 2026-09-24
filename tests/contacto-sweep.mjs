@@ -120,7 +120,16 @@ try {
   await formPage.waitForFunction(() => document.querySelector('[data-contact-form]')?.getAttribute('data-state') === 'success');
   assert.equal(await formPage.locator('#ct-nombre').inputValue(), '');
   assert.equal(await formPage.locator('[data-form-status]').textContent(), await formPage.locator('form').getAttribute('data-success'));
+  assert.equal(await formPage.locator('[data-form-success]').isVisible(), true);
+  assert.equal(await formPage.locator('[data-form-success] h3').textContent(), 'Mensaje enviado.');
+  assert.equal(await formPage.locator('[data-form-fields]').isVisible(), false);
+  await formPage.locator('[data-form-success]').screenshot({ path: '/tmp/contacto-success-desktop.png' });
+  await formPage.setViewportSize({ width: 390, height: 844 });
+  assert.equal(await formPage.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), 0);
+  await formPage.locator('[data-form-success]').screenshot({ path: '/tmp/contacto-success-mobile.png' });
 
+  await formPage.setViewportSize({ width: 1440, height: 900 });
+  await formPage.reload({ waitUntil: 'networkidle' });
   await formPage.locator('#ct-nombre').fill('Grace Hopper');
   await formPage.locator('#ct-email').fill('grace@example.com');
   await formPage.locator('#ct-mensaje').fill('Necesito una cotización.');
@@ -137,6 +146,7 @@ try {
   await formPage.locator('form button[type="submit"]').click();
   await formPage.waitForFunction(() => document.querySelector('[data-contact-form]')?.getAttribute('data-state') === 'success');
   assert.equal(await formPage.locator('[data-form-status]').textContent(), 'Thank you. We received your enquiry and will contact you soon.');
+  assert.equal(await formPage.locator('[data-form-success] h3').textContent(), 'Message sent.');
   await formPage.close();
 
   assert.deepEqual(errors, []);
