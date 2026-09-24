@@ -13,6 +13,7 @@
     "test:perf": "node tests/mobile-perf.mjs",
     "test:i18n": "node tests/i18n-sweep.mjs",
     "test:eredita": "node tests/eredita-gallery.mjs",
+    "test:contact-api": "node tests/contact-api.mjs",
     "studio:dev": "npm --prefix studio run dev",
     "studio:build": "npm --prefix studio run build",
     "studio:deploy": "npm --prefix studio run deploy",

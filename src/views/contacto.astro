@@ -91,16 +91,17 @@ const [emailUser, emailDomain] = contact.email.split('@');
           <div><p class="section-kicker">{formCopy.kicker}</p><h2 id="ct-form-title"><Lines text={formCopy.title} /></h2></div>
           <p data-reveal-group>{formCopy.text?.replace('{responseTime}', contact.responseTime)}</p>
         </header>
-        <form action="#" aria-label={form.aria}>
+        <form action="#" aria-label={form.aria} data-contact-form data-submit={form.submit} data-sending={form.sending} data-retry={form.retry} data-success={form.success} data-error={form.error} data-required={form.required} data-invalid-email={form.invalidEmail}>
           <div data-reveal-group>
-            <div class="f-row"><span>01</span><label for="ct-nombre">{form.name}</label><input id="ct-nombre" name="nombre" type="text" autocomplete="name" placeholder={form.namePlaceholder} /></div>
-            <div class="f-row"><span>02</span><label for="ct-empresa">{form.company}</label><input id="ct-empresa" name="empresa" type="text" autocomplete="organization" placeholder={form.companyPlaceholder} /></div>
-            <div class="f-row"><span>03</span><label for="ct-email">{form.email}</label><input id="ct-email" name="email" type="email" autocomplete="email" placeholder={form.emailPlaceholder} /></div>
-            <div class="f-row"><span>04</span><label for="ct-telefono">{form.phone}</label><input id="ct-telefono" name="telefono" type="tel" autocomplete="tel" placeholder={form.phonePlaceholder} /></div>
-            <div class="f-row"><span>05</span><label for="ct-motivo">{form.reason}</label><select id="ct-motivo" name="motivo" data-custom-select>{form.reasons.map((reason) => <option>{reason}</option>)}</select></div>
-            <div class="f-row f-row--text"><span>06</span><label for="ct-mensaje">{form.message}</label><textarea id="ct-mensaje" name="mensaje" placeholder={form.messagePlaceholder}></textarea></div>
+            <div class="f-row"><span>01</span><label for="ct-nombre">{form.name}</label><input id="ct-nombre" name="nombre" type="text" autocomplete="name" maxlength="120" required placeholder={form.namePlaceholder} /></div>
+            <div class="f-row"><span>02</span><label for="ct-empresa">{form.company}</label><input id="ct-empresa" name="empresa" type="text" autocomplete="organization" maxlength="160" placeholder={form.companyPlaceholder} /></div>
+            <div class="f-row"><span>03</span><label for="ct-email">{form.email}</label><input id="ct-email" name="email" type="email" autocomplete="email" maxlength="254" required placeholder={form.emailPlaceholder} /></div>
+            <div class="f-row"><span>04</span><label for="ct-telefono">{form.phone}</label><input id="ct-telefono" name="telefono" type="tel" autocomplete="tel" maxlength="50" placeholder={form.phonePlaceholder} /></div>
+            <div class="f-row"><span>05</span><label for="ct-motivo">{form.reason}</label><select id="ct-motivo" name="motivo" required data-custom-select>{form.reasons.map((reason) => <option>{reason}</option>)}</select></div>
+            <div class="f-row f-row--text"><span>06</span><label for="ct-mensaje">{form.message}</label><textarea id="ct-mensaje" name="mensaje" maxlength="4000" required placeholder={form.messagePlaceholder}></textarea></div>
           </div>
-          <div class="f-submit"><p>{form.consent}</p><button type="button">{form.submit} <Arrow /></button></div>
+          <div class="f-honeypot" aria-hidden="true"><label for="ct-website">Website</label><input id="ct-website" name="website" type="text" tabindex="-1" autocomplete="off" /></div>
+          <div class="f-submit"><p>{form.consent}</p><button type="submit"><b data-submit-label>{form.submit}</b> <Arrow /></button><p class="f-status" role="status" aria-live="polite" aria-atomic="true" data-form-status></p></div>
         </form>
       </section>
 
@@ -114,5 +115,6 @@ const [emailUser, emailDomain] = contact.email.split('@');
     </main>
     <ContactFooter lang={lang} contact={contact} />
     <script src="../scripts/contacto-motion.ts"></script>
+    <script src="../scripts/contacto-form.ts"></script>
   </body>
 </html>

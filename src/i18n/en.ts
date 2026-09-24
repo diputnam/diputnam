@@ -90,6 +90,12 @@ export const en: Dictionary = {
       message: 'Message', messagePlaceholder: 'Tell us briefly what you need and how we can help.',
       consent: 'By sending, you agree to be contacted to answer this enquiry.',
       submit: 'Send enquiry',
+      sending: 'Sending…',
+      retry: 'Try again',
+      success: 'Thank you. We received your enquiry and will contact you soon.',
+      error: 'We could not send your enquiry. Please try again.',
+      required: 'Complete this field.',
+      invalidEmail: 'Enter a valid email address.',
     },
   },
 };

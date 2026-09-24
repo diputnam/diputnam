@@ -91,6 +91,12 @@ export const es = {
       message: 'Mensaje', messagePlaceholder: 'Cuéntanos brevemente qué necesitas y cómo podemos ayudarte.',
       consent: 'Al enviar, aceptas que te contactemos para responder esta consulta.',
       submit: 'Enviar consulta',
+      sending: 'Enviando…',
+      retry: 'Intentar de nuevo',
+      success: 'Gracias. Recibimos tu consulta y te contactaremos pronto.',
+      error: 'No pudimos enviar tu consulta. Inténtalo de nuevo.',
+      required: 'Completa este campo.',
+      invalidEmail: 'Escribe un correo válido.',
     },
   },
 };

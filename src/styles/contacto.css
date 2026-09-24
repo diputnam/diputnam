@@ -111,8 +111,12 @@ a.index-row:hover i, a.index-row:focus-visible i { transform: translate(0.2rem, 
 .f-submit { display: grid; grid-template-columns: 4rem 16rem 1fr; gap: 1.5rem; align-items: center; padding: 1.8rem 0 0; }
 .f-submit p { grid-column: 2; margin: 0; color: rgba(0, 58, 54, 0.72); font-size: 0.78rem; line-height: 1.5; }
 .f-submit button { grid-column: 3; display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 3.5rem; padding: 1.4rem 1.6rem; border: 0; color: var(--putnam-paper); background: var(--putnam-deep); cursor: pointer; font-size: 0.83rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+.f-submit button b { font: inherit; }
+.f-submit button:disabled { cursor: wait; opacity: 0.65; }
 .f-submit button span { font-size: 1.2rem; transition: transform 180ms ease; }
 .f-submit button:hover span, .f-submit button:focus-visible span { transform: translateX(0.3rem); }
+.f-status { grid-column: 3; margin: 0.8rem 0 0; font-size: 0.78rem; line-height: 1.5; }
+.f-honeypot { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 .ct-cta { position: relative; display: flex; min-height: 100dvh; overflow: hidden; padding: 8rem var(--gutter) 6rem; flex-direction: column; justify-content: flex-end; color: var(--putnam-paper); background: var(--putnam-green); }
 .ct-cta h2 { position: relative; z-index: 1; max-width: 72rem; margin: 3rem 0 2rem; font-size: clamp(3.4rem, 8.2vw, 8.4rem); font-weight: 500; line-height: 0.89; letter-spacing: -0.06em; }
@@ -172,6 +176,7 @@ a.index-row:hover i, a.index-row:focus-visible i { transform: translate(0.2rem, 
   .f-row input, .f-row select, .f-row textarea, .f-row .custom-select { grid-column: 2; }
   .f-submit p { grid-column: 2; }
   .f-submit button { grid-column: 1 / 3; margin-top: 1.2rem; }
+  .f-submit .f-status { grid-column: 1 / 3; }
   .ct-cta { min-height: 0; justify-content: flex-start; padding: 6rem 1rem 3.5rem; }
   .ct-cta h2 { margin: 1.25rem 0 2rem; font-size: clamp(3rem, 15vw, 5.5rem); }
   .ct-cta .cta-mark { position: static; width: min(50%, 14rem); margin: 3rem auto 0; }
